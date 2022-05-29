@@ -1,7 +1,6 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:my_rutina/main.dart';
+import 'package:my_rutina/src/utils/alerts.dart';
 import 'package:my_rutina/src/utils/utils.dart';
 import 'package:my_rutina/src/utils/web_provider.dart';
 
@@ -21,10 +20,12 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController _repetirClave = TextEditingController();
   final WebProvider _webProvider = WebProvider();
   final Utils _utils = Utils();
+  final AlertProvider _alertProvider = AlertProvider();
 
   bool _datosIniciales = true;
   bool _visibleContrasenia = false;
   bool _visibleRepetirContrasenia = false;
+  bool _clavesCoinciden = false;
 
   @override
   Widget build(BuildContext context) {
@@ -32,24 +33,26 @@ class _RegisterPageState extends State<RegisterPage> {
     return SafeArea(
       child: Theme(
         data: themeData,
-        child: Scaffold(
-          body: SingleChildScrollView(
-            child: Stack(
-              children: [
-                Container(
-                  height: size.height * 0.97,
-                  decoration: const BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage("assets/images/login.jpg"),
-                      fit: BoxFit.cover,
+        child: LayoutBuilder(
+          builder: (context, constraints) => Scaffold(
+            body: SingleChildScrollView(
+              child: Stack(
+                children: [
+                  Container(
+                    height: constraints.maxHeight,
+                    decoration: const BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage("assets/images/login.jpg"),
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
-                ),
-                SizedBox(
-                  height: size.height * 0.9,
-                  child: _datosIniciales ? _wDatosIniciales() : _wPassword(),
-                ),
-              ],
+                  SizedBox(
+                    height: constraints.maxHeight,
+                    child: _datosIniciales ? _wDatosIniciales() : _wPassword(),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -129,9 +132,40 @@ class _RegisterPageState extends State<RegisterPage> {
                     style: TextStyle(color: Colors.white),
                   ),
                   onPressed: () {
-                    setState(() {
-                      _datosIniciales = false;
-                    });
+                    if (_nombreCompleto.text == "") {
+                      showDialog(
+                          context: context,
+                          builder: (context) {
+                            return _alertProvider.showErrorDialog(
+                                context, "Ingrese un nombre válido.");
+                          });
+                    } else if (_dni.text == "") {
+                      showDialog(
+                          context: context,
+                          builder: (context) {
+                            return _alertProvider.showErrorDialog(
+                                context, "Ingrese un dni válido.");
+                          });
+                    } else if (_telefono.text == "") {
+                      showDialog(
+                          context: context,
+                          builder: (context) {
+                            return _alertProvider.showErrorDialog(
+                                context, "Ingrese un telefono válido.");
+                          });
+                    } else if (_email.text == "" ||
+                        !_email.text.contains("@")) {
+                      showDialog(
+                          context: context,
+                          builder: (context) {
+                            return _alertProvider.showErrorDialog(
+                                context, "Ingrese un email válido.");
+                          });
+                    } else {
+                      setState(() {
+                        _datosIniciales = false;
+                      });
+                    }
                   },
                 ),
               ],
@@ -152,7 +186,9 @@ class _RegisterPageState extends State<RegisterPage> {
           child: IconButton(
             icon: Icon(Icons.arrow_back_ios, color: Colors.teal[300]),
             onPressed: () {
-              setState(() {});
+              setState(() {
+                _datosIniciales = true;
+              });
             },
           ),
         ),
@@ -227,11 +263,44 @@ class _RegisterPageState extends State<RegisterPage> {
                               });
                             }),
                   ),
+                  onChanged: (value) {
+                    setState(() {
+                      if (_clave.text == _repetirClave.text) {
+                        _clavesCoinciden = true;
+                      } else {
+                        _clavesCoinciden = false;
+                      }
+                    });
+                  },
                 ),
-                const Text(
-                  "AGREGAR VERIFICACION SI LAS CONTRASEÑAS COINCIDEN, MIENTRAS ESCRIBE",
-                  style: TextStyle(color: Colors.white),
-                ),
+                const SizedBox(height: 25),
+                _clavesCoinciden
+                    ? Row(
+                        children: const [
+                          Flexible(
+                            child: Text(
+                              "Las contraseñas coinciden.",
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 17),
+                            ),
+                          ),
+                          SizedBox(width: 25),
+                          Icon(Icons.check, color: Colors.green),
+                        ],
+                      )
+                    : Row(
+                        children: const [
+                          Flexible(
+                            child: Text(
+                              "Las contraseñas no coinciden.",
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 17),
+                            ),
+                          ),
+                          SizedBox(width: 25),
+                          Icon(Icons.error, color: Colors.red),
+                        ],
+                      ),
                 const SizedBox(height: 25),
                 ElevatedButton(
                   child: const Text(
@@ -255,16 +324,54 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   _registrarse() async {
-    Map parametros = {
-      "nombre": _nombreCompleto.text,
-      "dni": _dni.text,
-      "telefono": _telefono.text,
-      "email": _email.text,
-      "clave": _utils.md5Encode(_clave.text)
-    };
+    if (_clavesCoinciden) {
+      _alertProvider.showLoadingDialog(context, keyLoader);
+      Map parametros = {
+        "nombre": _nombreCompleto.text,
+        "dni": _dni.text,
+        "telefono": _telefono.text,
+        "email": _email.text,
+        "clave": _utils.md5Encode(_clave.text)
+      };
 
-    var respuesta =
-        await _webProvider.llamarFuncion("login", jsonEncode(parametros));
-    var hola = "";
+      var respuesta =
+          await _webProvider.llamarFuncion("registrarse", parametros);
+
+      Navigator.of(keyLoader.currentContext!, rootNavigator: true).pop();
+
+      if (respuesta == "1") {
+        showDialog(
+            context: context,
+            builder: (context) {
+              return _alertProvider.showSuccessDialog(
+                  context, "Registro exitoso");
+            }).then((value) {
+          Navigator.pushReplacementNamed(context, "login_page");
+        });
+      } else {
+        if (respuesta.contains("for key 'dni'")) {
+          showDialog(
+              context: context,
+              builder: (context) {
+                return _alertProvider.showErrorDialog(context,
+                    "Error al registrarse.\r\nYa existe un usuario con este dni.");
+              });
+        } else if (respuesta.contains("for key 'email'")) {
+          showDialog(
+              context: context,
+              builder: (context) {
+                return _alertProvider.showErrorDialog(context,
+                    "Error al registrarse.\r\nYa existe un usuario con este email.");
+              });
+        } else {
+          showDialog(
+              context: context,
+              builder: (context) {
+                return _alertProvider.showErrorDialog(
+                    context, "Error al registrarse.\r\nError: " + respuesta);
+              });
+        }
+      }
+    }
   }
 }

@@ -6,17 +6,13 @@ import 'package:my_rutina/src/pages/inicio/recuperar_clave.dart';
 import 'package:my_rutina/src/pages/inicio/registrarse.dart';
 import 'package:my_rutina/src/utils/utils.dart';
 import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'src/pages/entrenador/inicio_entrenador.dart';
+import 'src/pages/usuario/inicio_usuario.dart';
 
-void main() {
-  runApp(const MyApp());
-  if (Platform.isAndroid) {
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-        systemNavigationBarColor: Colors.black,
-        systemNavigationBarIconBrightness: Brightness.light));
-  }
-}
+final GlobalKey<State> keyLoader = GlobalKey<State>();
+SharedPreferences? prefs;
 
 ThemeData themeData = ThemeData(
   scaffoldBackgroundColor: HexColor.fromHex("#31454C"),
@@ -37,6 +33,20 @@ ThemeData themeData = ThemeData(
   )),
 );
 
+void main() async {
+  runApp(const MyApp());
+  prefs = await SharedPreferences.getInstance();
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations(
+      [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+
+  if (Platform.isAndroid) {
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+        systemNavigationBarColor: Colors.black,
+        systemNavigationBarIconBrightness: Brightness.light));
+  }
+}
+
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
@@ -56,6 +66,7 @@ class MyApp extends StatelessWidget {
           "recuperar_clave": (BuildContext context) => const RecuperarClave(),
           "inicio_entrenador": (BuildContext context) =>
               const InicioEntrenador(),
+          "inicio_usuario": (BuildContext context) => const InicioUsuario(),
         });
   }
 }

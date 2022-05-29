@@ -19,79 +19,80 @@ class _RecuperarClaveState extends State<RecuperarClave> {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
     return SafeArea(
       child: Theme(
         data: themeData,
-        child: Scaffold(
-          body: Stack(
-            children: [
-              Container(
-                height: size.height * 0.96,
-                decoration: const BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage("assets/images/login.jpg"),
-                    fit: BoxFit.cover,
+        child: LayoutBuilder(
+          builder: (context, constraints) => Scaffold(
+            body: Stack(
+              children: [
+                Container(
+                  height: constraints.maxHeight,
+                  decoration: const BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage("assets/images/login.jpg"),
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
-              ),
-              SizedBox(
-                height: size.height * 0.96,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Container(
-                      margin: const EdgeInsets.only(left: 20, top: 10),
-                      child: IconButton(
-                          icon: Icon(Icons.arrow_back_ios,
-                              color: Colors.teal[300]),
-                          onPressed: () {
-                            if (_correoEnviado && !_codigoIngresado) {
-                              setState(() {
-                                _correoEnviado = false;
-                              });
-                            } else if (_codigoIngresado) {
-                              setState(() {
-                                _codigoIngresado = false;
-                              });
-                            } else {
-                              Navigator.of(context).pop();
-                            }
-                          }),
-                    ),
-                    Expanded(child: Container()),
-                    Container(
-                      margin: const EdgeInsets.only(left: 40),
-                      child: const Text(
-                        "Recuperar clave",
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 27),
+                SizedBox(
+                  height: constraints.maxHeight,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        margin: const EdgeInsets.only(left: 20, top: 10),
+                        child: IconButton(
+                            icon: Icon(Icons.arrow_back_ios,
+                                color: Colors.teal[300]),
+                            onPressed: () {
+                              if (_correoEnviado && !_codigoIngresado) {
+                                setState(() {
+                                  _correoEnviado = false;
+                                });
+                              } else if (_codigoIngresado) {
+                                setState(() {
+                                  _codigoIngresado = false;
+                                });
+                              } else {
+                                Navigator.of(context).pop();
+                              }
+                            }),
                       ),
-                    ),
-                    Container(
-                      margin: const EdgeInsets.symmetric(
-                          vertical: 20, horizontal: 5),
-                      decoration: BoxDecoration(
-                        color: const Color.fromRGBO(0, 0, 0, 0.65),
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(30.0),
-                        child: Container(
-                          margin: const EdgeInsets.only(left: 10),
-                          child: _correoEnviado
-                              ? _correoYaEnviado()
-                              : _correoNoEnviado(),
+                      Expanded(child: Container()),
+                      Container(
+                        margin: const EdgeInsets.only(left: 40),
+                        child: const Text(
+                          "Recuperar clave",
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 27),
                         ),
                       ),
-                    ),
-                  ],
+                      Container(
+                        margin: const EdgeInsets.symmetric(
+                            vertical: 20, horizontal: 5),
+                        decoration: BoxDecoration(
+                          color: const Color.fromRGBO(0, 0, 0, 0.65),
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(30.0),
+                          child: Container(
+                            margin: const EdgeInsets.only(left: 10),
+                            child: _correoEnviado
+                                ? _correoYaEnviado()
+                                : _correoNoEnviado(),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
