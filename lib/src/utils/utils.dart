@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 import 'dart:ui';
 
 import 'package:crypto/crypto.dart';
@@ -16,6 +17,16 @@ class Utils {
 
   String md5Encode(String texto) {
     return md5.convert(utf8.encode(texto)).toString();
+  }
+
+  String randomCodigo() {
+    List codigo = [];
+    Random ran = Random();
+    for (int i = 0; i < 8; i++) {
+      var n = ran.nextInt(9);
+      codigo.add(n);
+    }
+    return codigo.join("");
   }
 }
 
