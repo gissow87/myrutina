@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:my_rutina/src/utils/utils.dart';
+
+import 'color.dart';
 
 class AlertProvider {
   showErrorDialog(BuildContext context, String texto) {
@@ -26,8 +27,7 @@ class AlertProvider {
           },
         ),
       ],
-      shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(20.0))),
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20.0))),
     );
   }
 
@@ -55,8 +55,7 @@ class AlertProvider {
           },
         ),
       ],
-      shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(20.0))),
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20.0))),
     );
   }
 
@@ -91,8 +90,7 @@ class AlertProvider {
           },
         ),
       ],
-      shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(20.0))),
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20.0))),
     );
   }
 
@@ -131,8 +129,7 @@ class AlertProvider {
           },
         ),
       ],
-      shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(20.0))),
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20.0))),
     );
   }
 
@@ -163,8 +160,7 @@ class AlertProvider {
               },
             ),
           ],
-          shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(20.0))),
+          shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20.0))),
         );
       },
     );
@@ -177,23 +173,20 @@ class AlertProvider {
         builder: (BuildContext context) {
           return WillPopScope(
               onWillPop: () async => false,
-              child: SimpleDialog(
-                  key: key,
-                  backgroundColor: Colors.black54,
-                  children: <Widget>[
-                    Center(
-                      child: Column(children: const [
-                        CircularProgressIndicator(),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Text(
-                          "Por favor espere...",
-                          style: TextStyle(color: Colors.white),
-                        )
-                      ]),
+              child: SimpleDialog(key: key, backgroundColor: Colors.black54, children: <Widget>[
+                Center(
+                  child: Column(children: const [
+                    CircularProgressIndicator(),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Text(
+                      "Por favor espere...",
+                      style: TextStyle(color: Colors.white),
                     )
-                  ]));
+                  ]),
+                )
+              ]));
         });
   }
 
@@ -222,8 +215,7 @@ class AlertProvider {
               },
             ),
           ],
-          shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(20.0))),
+          shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20.0))),
         );
       },
     );

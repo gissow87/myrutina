@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:my_rutina/src/pages/inicio/login.dart';
 import 'package:my_rutina/src/pages/inicio/recuperar_clave.dart';
 import 'package:my_rutina/src/pages/inicio/registrarse.dart';
-import 'package:my_rutina/src/utils/utils.dart';
+import 'package:my_rutina/src/utils/color.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
