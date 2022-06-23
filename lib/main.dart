@@ -18,12 +18,10 @@ ThemeData themeData = ThemeData(
   scaffoldBackgroundColor: HexColor.fromHex("#31454C"),
   //textField
   inputDecorationTheme: const InputDecorationTheme(
-    enabledBorder:
-        OutlineInputBorder(borderSide: BorderSide(color: Colors.white)),
+    enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white)),
     filled: true,
     fillColor: Color.fromRGBO(227, 237, 237, 1),
-    focusedBorder:
-        OutlineInputBorder(borderSide: BorderSide(color: Colors.white)),
+    focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white)),
   ),
   //ElevatedButton
   elevatedButtonTheme: ElevatedButtonThemeData(
@@ -34,17 +32,15 @@ ThemeData themeData = ThemeData(
 );
 
 void main() async {
-  runApp(const MyApp());
-  prefs = await SharedPreferences.getInstance();
   WidgetsFlutterBinding.ensureInitialized();
-  SystemChrome.setPreferredOrientations(
-      [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+  prefs = await SharedPreferences.getInstance();
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
 
   if (Platform.isAndroid) {
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-        systemNavigationBarColor: Colors.black,
-        systemNavigationBarIconBrightness: Brightness.light));
+    SystemChrome.setSystemUIOverlayStyle(
+        const SystemUiOverlayStyle(systemNavigationBarColor: Colors.black, systemNavigationBarIconBrightness: Brightness.light));
   }
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -64,8 +60,7 @@ class MyApp extends StatelessWidget {
           "login_page": (BuildContext context) => const LoginPage(),
           "register_page": (BuildContext context) => const RegisterPage(),
           "recuperar_clave": (BuildContext context) => const RecuperarClave(),
-          "inicio_entrenador": (BuildContext context) =>
-              const InicioEntrenador(),
+          "inicio_entrenador": (BuildContext context) => const InicioEntrenador(),
           "inicio_usuario": (BuildContext context) => const InicioUsuario(),
         });
   }

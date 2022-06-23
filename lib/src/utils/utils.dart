@@ -1,7 +1,6 @@
 import 'dart:convert';
-import 'dart:ui';
-
 import 'package:crypto/crypto.dart';
+import 'package:flutter/material.dart';
 
 class Utils {
   String base64Encode(String texto) {
@@ -16,6 +15,30 @@ class Utils {
 
   String md5Encode(String texto) {
     return md5.convert(utf8.encode(texto)).toString();
+  }
+
+  Widget logoPage(BuildContext context) {
+    return SafeArea(
+      child: LayoutBuilder(
+        builder: ((context, constraints) {
+          return SizedBox(
+            height: constraints.maxHeight,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Center(
+                  child: Image(image: AssetImage("assets/icons/logo.png")),
+                ),
+                SizedBox(height: constraints.maxHeight * 0.1),
+                CircularProgressIndicator(
+                  color: Colors.teal[300],
+                ),
+              ],
+            ),
+          );
+        }),
+      ),
+    );
   }
 }
 

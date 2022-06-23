@@ -42,3 +42,21 @@ function login($parametros)
     }
     $db->close();
 }
+
+function getClientes($parametros){
+    $db = connectDB();
+    $identrenador = $parametros['identrenador'];
+
+    $resultado = $db->query("CALL sp_getClientes($identrenador)");
+
+    $clientes = [];
+    if ($resultado) {
+        while( $row = mysqli_fetch_assoc($resultado)){
+            $clientes[] = $row;
+        }
+        return json_encode($clientes);
+    } else {
+        return "Error al obtener clientes: (" . $db->errno . ") " . $db->error;
+    }
+    $db->close();
+}

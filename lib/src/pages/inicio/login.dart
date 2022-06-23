@@ -22,6 +22,20 @@ class _LoginPageState extends State<LoginPage> {
   final Utils _utils = Utils();
 
   bool _claveVisible = false;
+  bool _recordarCuenta = false;
+
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _email.text = prefs!.getString("emailInicio") ?? "";
+    _clave.text = prefs!.getString("claveInicio") ?? "";
+    _recordarCuenta = prefs!.getBool("recordarCuenta") ?? false;
+    setState(() {
+      _isLoading = false;
+    });
+  }
 
   Color getColor(Set<MaterialState> states) {
     const Set<MaterialState> interactiveStates = <MaterialState>{
@@ -37,146 +51,148 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Theme(
-        data: themeData,
-        child: LayoutBuilder(
-          builder: (context, constraints) => Scaffold(
-            body: SingleChildScrollView(
-              child: Stack(
-                children: [
-                  Container(
-                    height: constraints.maxHeight,
-                    decoration: const BoxDecoration(
-                        image: DecorationImage(
-                      image: AssetImage("assets/images/login.jpg"),
-                      fit: BoxFit.cover,
-                    )),
-                  ),
-                  SizedBox(
-                    height: constraints.maxHeight,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Expanded(child: Container()),
-                        Container(
-                          margin: const EdgeInsets.only(left: 40),
-                          child: const Text(
-                            "Bienvenido!",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 27),
+    if (_isLoading) {
+      return _utils.logoPage(context);
+    } else {
+      return SafeArea(
+        child: Theme(
+          data: themeData,
+          child: LayoutBuilder(
+            builder: (context, constraints) => Scaffold(
+              body: SingleChildScrollView(
+                child: Stack(
+                  children: [
+                    Container(
+                      height: constraints.maxHeight,
+                      decoration: const BoxDecoration(
+                          image: DecorationImage(
+                        image: AssetImage("assets/images/login.jpg"),
+                        fit: BoxFit.cover,
+                      )),
+                    ),
+                    SizedBox(
+                      height: constraints.maxHeight,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Expanded(child: Container()),
+                          Container(
+                            margin: const EdgeInsets.only(left: 40),
+                            child: const Text(
+                              "Bienvenido!",
+                              style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 27),
+                            ),
                           ),
-                        ),
-                        Container(
-                          margin: const EdgeInsets.symmetric(
-                              vertical: 20, horizontal: 5),
-                          decoration: BoxDecoration(
-                            color: const Color.fromRGBO(0, 0, 0, 0.65),
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(30.0),
-                            child: Container(
-                              margin: const EdgeInsets.only(left: 10),
-                              child: Column(
-                                children: [
-                                  TextField(
-                                    keyboardType: TextInputType.emailAddress,
-                                    controller: _email,
-                                    decoration: const InputDecoration(
-                                      hintText: "Correo",
-                                      hintStyle: TextStyle(
-                                          color: Color.fromRGBO(0, 0, 0, 0.4)),
+                          Container(
+                            margin: const EdgeInsets.symmetric(vertical: 20, horizontal: 5),
+                            decoration: BoxDecoration(
+                              color: const Color.fromRGBO(0, 0, 0, 0.65),
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(30.0),
+                              child: Container(
+                                margin: const EdgeInsets.only(left: 10),
+                                child: Column(
+                                  children: [
+                                    TextField(
+                                      keyboardType: TextInputType.emailAddress,
+                                      controller: _email,
+                                      decoration: const InputDecoration(
+                                        hintText: "Correo",
+                                        hintStyle: TextStyle(color: Color.fromRGBO(0, 0, 0, 0.4)),
+                                      ),
                                     ),
-                                  ),
-                                  const SizedBox(height: 25),
-                                  TextField(
-                                    controller: _clave,
-                                    decoration: InputDecoration(
-                                      hintText: "Contraseña",
-                                      suffixIcon: _claveVisible
-                                          ? IconButton(
-                                              icon: Icon(Icons.lock_open,
-                                                  color: Colors.teal[400]),
-                                              onPressed: () {
-                                                setState(() {
-                                                  _claveVisible = false;
-                                                });
-                                              })
-                                          : IconButton(
-                                              icon: Icon(Icons.lock_outline,
-                                                  color: Colors.teal[400]),
-                                              onPressed: () {
-                                                setState(() {
-                                                  _claveVisible = true;
-                                                });
-                                              }),
-                                      hintStyle: const TextStyle(
-                                          color: Color.fromRGBO(0, 0, 0, 0.4)),
+                                    const SizedBox(height: 25),
+                                    TextField(
+                                      controller: _clave,
+                                      decoration: InputDecoration(
+                                        hintText: "Contraseña",
+                                        suffixIcon: _claveVisible
+                                            ? IconButton(
+                                                icon: Icon(Icons.lock_open, color: Colors.teal[400]),
+                                                onPressed: () {
+                                                  setState(() {
+                                                    _claveVisible = false;
+                                                  });
+                                                })
+                                            : IconButton(
+                                                icon: Icon(Icons.lock_outline, color: Colors.teal[400]),
+                                                onPressed: () {
+                                                  setState(() {
+                                                    _claveVisible = true;
+                                                  });
+                                                }),
+                                        hintStyle: const TextStyle(color: Color.fromRGBO(0, 0, 0, 0.4)),
+                                      ),
+                                      obscureText: _claveVisible ? false : true,
                                     ),
-                                    obscureText: _claveVisible ? false : true,
-                                  ),
-                                  const SizedBox(height: 25),
-                                  const Text("¿Aún no tienes cuenta?",
-                                      style: TextStyle(color: Colors.white)),
-                                  const SizedBox(height: 25),
-                                  InkWell(
-                                    child: Text("Registrate aquí",
-                                        style: TextStyle(
-                                            color: Colors.tealAccent[400])),
-                                    onTap: () {
-                                      Navigator.pushNamed(
-                                          context, "register_page");
-                                    },
-                                  ),
-                                  const SizedBox(height: 25),
-                                  ElevatedButton(
-                                    child: const Text(
-                                      "Iniciar sesión",
-                                      style: TextStyle(color: Colors.white),
+                                    const SizedBox(height: 25),
+                                    const Text("¿Aún no tienes cuenta?", style: TextStyle(color: Colors.white)),
+                                    const SizedBox(height: 25),
+                                    InkWell(
+                                      child: Text("Registrate aquí", style: TextStyle(color: Colors.tealAccent[400])),
+                                      onTap: () {
+                                        Navigator.pushNamed(context, "register_page");
+                                      },
                                     ),
-                                    onPressed: () {
-                                      _login();
-                                    },
-                                  ),
-                                  const SizedBox(height: 25),
-                                  InkWell(
-                                    child: Text(
-                                        "¿Olvidaste tu contraseña?\r\nToca aquí para recuperarla.",
-                                        style: TextStyle(
-                                            color: Colors.tealAccent[400])),
-                                    onTap: () {
-                                      Navigator.pushNamed(
-                                          context, "recuperar_clave");
-                                    },
-                                  ),
-                                ],
+                                    Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        const Flexible(child: Text("Recordar cuenta", style: TextStyle(color: Colors.white))),
+                                        Checkbox(
+                                            checkColor: Colors.black,
+                                            fillColor: MaterialStateProperty.all(
+                                              Colors.white,
+                                            ),
+                                            value: _recordarCuenta,
+                                            onChanged: (value) {
+                                              setState(() {
+                                                _recordarCuenta = value!;
+                                              });
+                                            })
+                                      ],
+                                    ),
+                                    ElevatedButton(
+                                      child: const Text(
+                                        "Iniciar sesión",
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                                      onPressed: () {
+                                        _login();
+                                      },
+                                    ),
+                                    const SizedBox(height: 25),
+                                    InkWell(
+                                      child: Text("¿Olvidaste tu contraseña?\r\nToca aquí para recuperarla.",
+                                          style: TextStyle(color: Colors.tealAccent[400])),
+                                      onTap: () {
+                                        Navigator.pushNamed(context, "recuperar_clave");
+                                      },
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
         ),
-      ),
-    );
+      );
+    }
   }
 
   _login() async {
     _alertProvider.showLoadingDialog(context, keyLoader);
-    Map parametros = {
-      "email": _email.text,
-      "clave": _utils.md5Encode(_clave.text)
-    };
+    Map parametros = {"email": _email.text, "clave": _utils.md5Encode(_clave.text)};
 
     var respuesta = await _webProvider.llamarFuncion("login", parametros);
     Navigator.of(keyLoader.currentContext!, rootNavigator: true).pop();
@@ -184,8 +200,7 @@ class _LoginPageState extends State<LoginPage> {
       showDialog(
           context: context,
           builder: (context) {
-            return _alertProvider.showErrorDialog(
-                context, "Usuario no encontrado.");
+            return _alertProvider.showErrorDialog(context, "Usuario no encontrado.");
           });
     } else {
       Map mUsuario = jsonDecode(respuesta);
@@ -197,6 +212,16 @@ class _LoginPageState extends State<LoginPage> {
         prefs?.setBool("es_entrenador", true);
       } else {
         prefs?.setBool("es_entrenador", false);
+      }
+
+      if (_recordarCuenta) {
+        prefs?.setString("emailInicio", _email.text);
+        prefs?.setString("claveInicio", _clave.text);
+        prefs?.setBool("recordarCuenta", true);
+      } else {
+        prefs?.setString("emailInicio", "");
+        prefs?.setString("claveInicio", "");
+        prefs?.setBool("recordarCuenta", true);
       }
 
       if (mUsuario["es_entrenador"] == "1") {
